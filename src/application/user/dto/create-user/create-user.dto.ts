@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 /**
  * @CreateUserDto los DTO son objetos para el transporte de información proveniente desde
@@ -8,8 +8,14 @@ import { IsString } from 'class-validator';
  */
 export class CreateUserDto {
   @IsString()
-  readonly name: string;
+  @IsEmail({}, { message: 'El $property que estas enviando debe ser de tipo email.'})
+  @IsNotEmpty({ message: 'El $property es obligatorío.' })
+  readonly email: string;
 
   @IsString()
-  readonly birthday: Date;
+  @IsNotEmpty({ message: 'La contraseña es obligatoría.' })
+  @MinLength(8, { message: 'La contraseña debe tener mínimo 9 dígitos.' })
+  @MaxLength(16, { message: 'La contraseña debe tener máximo 16 dígitos.' })
+  @Matches(/^[a-zA-Z0-9*/$%&+-]*$/, { message: 'La contraseña solo permite caracteres alfanuméricos y caracteres permitidos (*/+-$%&).' })
+  readonly password: string;
 }

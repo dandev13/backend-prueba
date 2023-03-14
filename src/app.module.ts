@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongoDatabaseModule } from './frameworks/db/mongo-database/mongo-database.module';
+import { CategoriesModule } from './frameworks/modules/categories/categories.module';
+import { SubCategoriesModule } from './frameworks/modules/subcategories/subcategories.module';
 import { UserModule } from './frameworks/modules/user/user.module';
 
 /**
@@ -12,6 +14,8 @@ import { UserModule } from './frameworks/modules/user/user.module';
     ConfigModule.forRoot({ isGlobal: true }),
     MongoDatabaseModule,
     UserModule,
+    CategoriesModule,
+    SubCategoriesModule,
   ],
 })
 export class AppModule {

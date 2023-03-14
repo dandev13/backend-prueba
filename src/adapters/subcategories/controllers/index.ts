@@ -1,0 +1,1 @@
+export { CreateSubCategoriesController } from './subcategories.controller';

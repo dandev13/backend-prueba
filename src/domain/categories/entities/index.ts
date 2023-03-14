@@ -1,0 +1,1 @@
+export { CategoriesEntity } from './categories.entity';

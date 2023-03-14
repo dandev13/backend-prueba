@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/adapters/user/gateways/repositories';
+import { BcryptRepository } from 'src/adapters/user/gateways/repositories/bcrypt';
 import { CreateUserPresenter } from 'src/adapters/user/presenters';
 import { UserEntity } from 'src/domain/user/entities';
 import { CreateUserDto, CreateUserOutputDto } from '../../dto';
@@ -26,6 +27,7 @@ export class CreateUserService {
   constructor(
     private readonly createUserPresenter: CreateUserPresenter,
     private readonly userRepository: UserRepository,
+    private readonly bcryptRepository: BcryptRepository,
   ) {}
 
   /**
@@ -34,9 +36,11 @@ export class CreateUserService {
    */
   async create(createUserDto: CreateUserDto): Promise<void> {
     try {
+      await this.bcryptRepository.bcryptEncrypt(createUserDto.password);
+
       const user = new UserEntity();
-      user.name = createUserDto.name;
-      user.birthday = createUserDto.birthday;
+      user.email = createUserDto.email;
+      user.password = this.bcryptRepository.resultEncrypt;
       await this.userRepository.create(user);
       this.setUserDto(user);
     } catch (error) {

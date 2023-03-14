@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { CreateUserDto } from 'src/application/user/dto';
 import { CreateUserService } from 'src/application/user/use-cases/create-user/create-user.service';
 import { CreateUserPresenter } from '../../presenters';
@@ -23,7 +23,12 @@ export class CreateUserController {
       await this.createUserService.create(body);
       return this.createUserPresenter.content;
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        error: error.message
+      }, HttpStatus.INTERNAL_SERVER_ERROR, {
+        cause: error
+      });
     }
   }
 }

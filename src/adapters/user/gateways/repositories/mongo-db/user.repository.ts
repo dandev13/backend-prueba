@@ -18,15 +18,40 @@ export class UserRepository implements RepositoryInterface {
 
   async create(user: UserEntity): Promise<void> {
     try {
+      
       const obj = new this.userModel({
-        name: user.name,
-        birthday: user.birthday,
+        email: user.email,
+        password: user.password,
       });
       await obj.save();
       if (!obj._id) throw new Error('No fue posible crear el usuario');
       user._id = obj._id.toHexString();
     } catch (error) {
       throw new Error(error.message);
+    }
+  }
+
+  async getUser(user: UserEntity): Promise<void> {
+    try {
+      const _user = await this.userModel.findOne()
+        .where({ email: user.email });
+      
+      if (!_user) throw new Error('El usuario no existe.');
+      user._id = _user._id.toHexString();
+      user.password = _user.password;
+      
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async login(user: UserEntity): Promise<void> {
+    try {
+      const result = await this.userModel.findByIdAndUpdate(user._id, { token: user.token });
+      
+      if (!result) throw new Error('El usuario no se pudo autenticar.')
+    } catch (error) {
+      throw new Error(error.message); 
     }
   }
 }

@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CreateUserController } from 'src/adapters/user/controllers';
+import { CreateUserController, LoginUserController } from 'src/adapters/user/controllers';
 import { UserRepository } from 'src/adapters/user/gateways/repositories';
-import { CreateUserPresenter } from 'src/adapters/user/presenters';
-import { CreateUserService } from 'src/application/user/use-cases';
+import { BcryptRepository } from 'src/adapters/user/gateways/repositories/bcrypt';
+import { JwtRepository } from 'src/adapters/user/gateways/repositories/jwt';
+import { CreateUserPresenter, LoginUserPresenter } from 'src/adapters/user/presenters';
+import { CreateUserService, LoginUserService } from 'src/application/user/use-cases';
 import { UserSchema } from 'src/domain/user/schemas';
 
 /**
@@ -12,8 +16,36 @@ import { UserSchema } from 'src/domain/user/schemas';
  * servicios, presentadores y respositorios.
  */
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }])],
-  controllers: [CreateUserController],
-  providers: [CreateUserService, CreateUserPresenter, UserRepository],
+  imports: [
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    // Modulo Async
+    JwtModule.registerAsync({
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        /* Funcion que se manda a llamar cuando
+        * se intenta registrar de manera async el modulo
+        */
+        useFactory: () => {
+            return {
+                signOptions: {
+                    expiresIn: '2d'
+                }
+            }
+        }
+    }),
+  ],
+  controllers: [
+    CreateUserController,
+    LoginUserController,
+  ],
+  providers: [
+    CreateUserService,
+    LoginUserService,
+    CreateUserPresenter,
+    LoginUserPresenter,
+    UserRepository,
+    BcryptRepository,
+    JwtRepository,
+  ],
 })
 export class UserModule {}

@@ -11,10 +11,11 @@ import { PresenterInterface } from 'src/domain/user/interfaces';
 export class CreateUserPresenter {
   private _content: PresenterInterface = {
     data: [],
-    detail: 'El usuario se a creado exitosamente',
+    detail: 'El usuario se ha creado exitosamente',
     severities: 'success',
     summary: 'User',
     viewToast: false,
+    status: 200
   };
   public get content(): PresenterInterface {
     return this._content;

@@ -7,5 +7,10 @@ import { Schema } from 'mongoose';
  */
 export const UserSchema = new Schema({
   email: { type: String, required: true },
-  password: { type: String, required: true, select: false },
+  password: { type: String, required: true },
+  token: { type: String },
+  softDelete: { type: String },
+},
+{
+    timestamps: true
 });

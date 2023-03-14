@@ -1,0 +1,36 @@
+version: "3.5"
+services:
+  # ******************* Containers Development - Backend *****************
+  mongodb_backend_dev:
+    image: mongo
+    command: mongod --auth --port 27028
+    restart: always
+    volumes:
+      - ./storage/db:/data/db
+      - ./mongo/mongo-init_dev.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admindev
+      - MONGO_INITDB_ROOT_PASSWORD=b4ck3ndd3v
+      - MONGO_INITDB_DATABASE=microservice_backend_dev
+    ports:
+      - '27029:27028'
+
+
+  microservice_backend_dev:
+      image: microservice_backend_dev
+      links:
+        - mongodb_backend_dev
+      container_name: microservice_backend_dev
+      # start_period: 15
+      build:
+        context: .
+        target: production
+        dockerfile: Dockerfile
+      environment:
+        NODE_ENV: development
+        MONGO_DEVELOPMENT: "mongodb://admindev:b4ck3ndd3v@localhost:27028/microservice_backend_dev"
+      ports:
+        - '8001:8001'
+      restart: always
+      depends_on:
+        - mongodb_backend_dev

@@ -1,0 +1,1 @@
+export { SubCategoriesRepository } from './subcategories.repository';

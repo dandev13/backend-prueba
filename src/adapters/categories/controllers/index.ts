@@ -1,0 +1,1 @@
+export { CreateCategoriesController } from './categories/categories.controller';

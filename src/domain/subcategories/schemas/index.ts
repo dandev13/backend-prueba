@@ -1,0 +1,1 @@
+export { SubCategoriesSchema } from './subcategories.schema';
